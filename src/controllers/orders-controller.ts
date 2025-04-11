@@ -54,7 +54,10 @@ class OrdersController {
                 "orders.product_id", 
                 "products.name", 
                 "orders.price", 
-                "orders.quantity"
+                "orders.quantity",
+                knex.raw("(orders.price * orders.quantity) AS total"),
+                "orders.created_at",
+                "orders.updated_at"
             )
             .join(
                 "products", 
@@ -62,7 +65,8 @@ class OrdersController {
                 "orders.product_id"
             )
             .where({ table_session_id })
-            
+            .orderBy("orders.created_at", "desc")
+
             return response.json(order)
         } catch (error) {
             next(error)
